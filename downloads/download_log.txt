@@ -1,0 +1,22 @@
+# Download Log
+
+Downloaded items:
+
+1. Apache Maven 3.9.6 - Maven build tool for Java projects
+   - URL: https://dlcdn.apache.org/maven/maven-3/3.9.6/binaries/apache-maven-3.9.6-bin.zip
+   - Date: 2025-05-02
+   - Location: C:\Users\jesse\Code_away\Selenium_me_crazy\downloads\apache-maven-3.9.6.zip
+   - Purpose: Used to build and run the Selenium test project
+
+2. ChromeDriver - WebDriver for Chrome
+   - URL: https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/135.0.7049.114/win64/chromedriver-win64.zip
+   - Date: 2025-05-02
+   - Location: C:\Users\jesse\.cache\selenium\chromedriver\win64\135.0.7049.114\chromedriver.exe
+   - Purpose: Required for Selenium to control Chrome browser
+   - Note: Downloaded automatically by WebDriverManager
+
+3. Selenium, TestNG, and other Java dependencies
+   - Downloaded by Maven from Maven Central Repository
+   - Date: 2025-05-02
+   - Location: Maven local repository
+   - Purpose: Required libraries for testing framework
