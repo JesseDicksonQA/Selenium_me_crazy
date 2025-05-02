@@ -4,6 +4,13 @@
     <!-- Parameter for browser type can be set here -->
     <parameter name="browser" value="chrome" />
     
+    <!-- Configure listeners for screenshot capture and enhanced reporting -->
+    <listeners>
+        <listener class-name="org.uncommons.reportng.HTMLReporter" />
+        <listener class-name="org.uncommons.reportng.JUnitXMLReporter" />
+        <listener class-name="com.selenium.test.utils.TestListener" />
+    </listeners>
+    
     <test name="Website Tests">
         <classes>
             <class name="com.selenium.test.AutomationExerciseTest" />
