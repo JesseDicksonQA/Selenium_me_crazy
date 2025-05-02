@@ -1,7 +1,9 @@
 package com.selenium.test;
 
 import com.selenium.test.utils.BrowserDriverManager;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.Assert;
@@ -9,6 +11,8 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
+
+import java.util.List;
 
 /**
  * Test class for the Automation Exercise website.
@@ -72,6 +76,44 @@ public class AutomationExerciseTest {
         Assert.assertEquals(actualTitle, EXPECTED_TITLE, "Website title is not as expected");
         
         logger.info("Title verification completed successfully");
+    }
+    
+    /**
+     * Test method to verify that there are 6 items in the Women's Tops category.
+     * 
+     * This test performs the following steps:
+     * 1. Navigate directly to the Women's Tops category page
+     * 2. Count the number of products displayed
+     * 3. Verify that there are exactly 6 items in this category
+     */
+    @Test
+    public void verifyWomenTopsItemCount() {
+        logger.info("Starting test: verifyWomenTopsItemCount");
+        
+        // Step 1: Navigate directly to the Women's Tops category page
+        // The direct URL for the Women's Tops category is used to avoid navigation issues
+        String womenTopsCategoryUrl = WEBSITE_URL + "category_products/2";
+        logger.info("Navigating directly to Women's Tops category: {}", womenTopsCategoryUrl);
+        driver.get(womenTopsCategoryUrl);
+        
+        // Step 2: Count the number of products displayed
+        // Wait a bit for the products to load completely
+        try {
+            Thread.sleep(2000);  // 2-second wait to ensure page loads
+        } catch (InterruptedException e) {
+            logger.error("Thread sleep interrupted", e);
+        }
+        
+        List<WebElement> productItems = driver.findElements(By.className("single-products"));
+        int actualItemCount = productItems.size();
+        logger.info("Number of items found in Women's Tops category: {}", actualItemCount);
+        
+        // Step 3: Verify there are exactly 6 items in this category
+        int expectedItemCount = 6;
+        logger.info("Verifying item count. Expected: {}, Actual: {}", expectedItemCount, actualItemCount);
+        Assert.assertEquals(actualItemCount, expectedItemCount, "Number of items in Women's Tops category is not as expected");
+        
+        logger.info("Women's Tops item count verification completed successfully");
     }
     
     /**

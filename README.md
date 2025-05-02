@@ -66,6 +66,7 @@ By default, tests will run in Chrome. To run with a different browser, modify th
 ## Current Test Cases
 
 1. **Verify Website Title**: Navigates to the Automation Exercise website and verifies that the page title is correct
+2. **Verify Women's Tops Item Count**: Navigates directly to the Women's Tops category page and verifies that there are exactly 6 items displayed
 
 ## Adding New Tests
 
