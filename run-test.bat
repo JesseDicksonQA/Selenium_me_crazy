@@ -26,4 +26,9 @@ echo.
 echo Test execution completed.
 echo.
 
+:: Copy ReportNG reports to test-output/reports
+echo Running report copy script...
+call %PROJECT_PATH%\copy-reports.bat
+echo.
+
 pause

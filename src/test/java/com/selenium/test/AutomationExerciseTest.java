@@ -31,26 +31,28 @@ public class AutomationExerciseTest {
     // Expected title of the website homepage
     private static final String EXPECTED_TITLE = "Automation Exercise";
     
-    // WebDriver instance to control the browser
-    private WebDriver driver;
+    // WebDriver instance to control the browser - using ThreadLocal for parallel test safety
+    private static ThreadLocal<WebDriver> driver = new ThreadLocal<>();
     
     /**
      * Setup method that runs before each test method.
      * This method initializes the WebDriver based on the specified browser type.
      * 
      * @param browserType The type of browser to use for the test (specified in testng.xml)
+     * @param useGrid Whether to use Selenium Grid (specified in testng.xml)
      */
     @BeforeMethod
-    @Parameters({"browser"})
-    public void setup(String browserType) {
-        logger.info("Setting up test with browser: {}", browserType);
+    @Parameters({"browser", "useGrid"})
+    public void setup(String browserType, boolean useGrid) {
+        logger.info("Setting up test with browser: {} on {} execution", 
+                browserType, useGrid ? "grid" : "local");
         
-        // Initialize the WebDriver based on the browser type
-        driver = BrowserDriverManager.getDriver(browserType);
+        // Initialize the WebDriver based on the browser type and grid setting
+        driver.set(BrowserDriverManager.getDriver(browserType, useGrid));
         
         logger.info("WebDriver initialized successfully");
     }
-    
+
     /**
      * Test method to verify the website title.
      * 
@@ -59,16 +61,16 @@ public class AutomationExerciseTest {
      * 2. Get the actual title of the webpage
      * 3. Verify that the actual title matches the expected title
      */
-    @Test
+    @Test(groups = "smoke")
     public void verifyWebsiteTitle() {
         logger.info("Starting test: verifyWebsiteTitle");
         
         // Step 1: Navigate to the website URL
         logger.info("Navigating to URL: {}", WEBSITE_URL);
-        driver.get(WEBSITE_URL);
+        driver.get().get(WEBSITE_URL);
         
         // Step 2: Get the actual title of the webpage
-        String actualTitle = driver.getTitle();
+        String actualTitle = driver.get().getTitle();
         logger.info("Actual website title: {}", actualTitle);
         
         // Step 3: Verify that the actual title matches the expected title
@@ -86,7 +88,7 @@ public class AutomationExerciseTest {
      * 2. Count the number of products displayed
      * 3. Verify that there are exactly 6 items in this category
      */
-    @Test
+    @Test(groups = "regression")
     public void verifyWomenTopsItemCount() {
         logger.info("Starting test: verifyWomenTopsItemCount");
         
@@ -94,7 +96,7 @@ public class AutomationExerciseTest {
         // The direct URL for the Women's Tops category is used to avoid navigation issues
         String womenTopsCategoryUrl = WEBSITE_URL + "category_products/2";
         logger.info("Navigating directly to Women's Tops category: {}", womenTopsCategoryUrl);
-        driver.get(womenTopsCategoryUrl);
+        driver.get().get(womenTopsCategoryUrl);
         
         // Step 2: Count the number of products displayed
         // Wait a bit for the products to load completely
@@ -104,7 +106,7 @@ public class AutomationExerciseTest {
             logger.error("Thread sleep interrupted", e);
         }
         
-        List<WebElement> productItems = driver.findElements(By.className("single-products"));
+        List<WebElement> productItems = driver.get().findElements(By.className("single-products"));
         int actualItemCount = productItems.size();
         logger.info("Number of items found in Women's Tops category: {}", actualItemCount);
         
@@ -124,8 +126,9 @@ public class AutomationExerciseTest {
     public void tearDown() {
         logger.info("Tearing down test");
         
-        // Quit the WebDriver instance
-        BrowserDriverManager.quitDriver(driver);
+        // Quit the WebDriver instance and remove the thread-local reference
+        BrowserDriverManager.quitDriver(driver.get());
+        driver.remove();
         
         logger.info("Test cleanup completed");
     }

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="Selenium Grid Test Suite" parallel="methods" thread-count="2">
+    <!-- Parameter for browser type can be set here -->
+    <parameter name="browser" value="chrome" />
+    <parameter name="useGrid" value="true"/>
+    
+    <!-- Configure listeners for enhanced reporting -->
+    <listeners>
+        <listener class-name="org.uncommons.reportng.HTMLReporter" />
+        <listener class-name="org.uncommons.reportng.JUnitXMLReporter" />
+    </listeners>
+    
+    <test name="Selected Grid Tests">
+        <groups>
+            <run>
+                <!-- Only run tests in these groups -->
+                <include name="smoke"/>
+                <include name="regression"/>
+                <!-- If you add a new group later, it won't run unless added here -->
+            </run>
+        </groups>
+        <classes>
+            <class name="com.selenium.test.AutomationExerciseTest"/>
+        </classes>
+    </test>
+</suite>
