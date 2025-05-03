@@ -12,11 +12,58 @@
 <body>
 <h1>Website Tests</h1>
 <p>
-  Test duration: 8.601s
+  Test duration: 8.751s
 </p>
 
 
 
+  <table class="resultsTable">
+    <tr><th colspan="3" class="header failed">Failed Tests</th></tr>
+          <tr>
+        <td colspan="3" class="group">com.selenium.test.AutomationExerciseTest</td>
+      </tr>
+            
+<tr>
+  <td class="method">
+                  verifyWomenTopsItemCount
+      </td>
+  <td class="duration">
+    3.622s
+  </td>
+  <td class="result">
+        
+    
+            <div class="testOutput">
+                        <a href='screenshots/verifyWomenTopsItemCount_20250502_235853.png' target='_blank'>View Screenshot</a>
+                  </div>
+    
+
+        <a href="javascript:toggleElement('exception-0', 'block')" title="Click to expand/collapse"><b>java.lang.AssertionError: Number of items in Women&apos;s Tops category is not as expected expected [5] but found [6]</b></a><br />
+    <div class="stackTrace" id="exception-0">
+              org.testng.Assert.fail(Assert.java:111)<br />
+              org.testng.Assert.failNotEquals(Assert.java:1578)<br />
+              org.testng.Assert.assertEqualsImpl(Assert.java:150)<br />
+              org.testng.Assert.assertEquals(Assert.java:132)<br />
+              org.testng.Assert.assertEquals(Assert.java:1419)<br />
+              org.testng.Assert.assertEquals(Assert.java:1383)<br />
+              com.selenium.test.AutomationExerciseTest.verifyWomenTopsItemCount(AutomationExerciseTest.java:116)<br />
+              java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)<br />
+              java.base/java.lang.reflect.Method.invoke(Method.java:580)<br />
+              org.testng.internal.invokers.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:139)<br />
+              org.testng.internal.invokers.TestInvoker.invokeMethod(TestInvoker.java:664)<br />
+              org.testng.internal.invokers.TestInvoker.invokeTestMethod(TestInvoker.java:227)<br />
+              org.testng.internal.invokers.MethodRunner.runInSequence(MethodRunner.java:50)<br />
+              org.testng.internal.invokers.TestInvoker$MethodInvocationAgent.invoke(TestInvoker.java:957)<br />
+              org.testng.internal.invokers.TestInvoker.invokeTestMethods(TestInvoker.java:200)<br />
+              org.testng.internal.invokers.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:148)<br />
+              org.testng.internal.invokers.TestMethodWorker.run(TestMethodWorker.java:128)<br />
+              java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)<br />
+              java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)<br />
+              java.base/java.lang.Thread.run(Thread.java:1583)<br />
+                </div>
+      </td>
+</tr>
+      </table>
 
 
   <table class="resultsTable">
@@ -30,21 +77,7 @@
                   verifyWebsiteTitle
       </td>
   <td class="duration">
-    1.778s
-  </td>
-  <td class="result">
-        
-    
-        
-
-      </td>
-</tr>
-<tr>
-  <td class="method">
-                  verifyWomenTopsItemCount
-      </td>
-  <td class="duration">
-    3.653s
+    1.658s
   </td>
   <td class="result">
         

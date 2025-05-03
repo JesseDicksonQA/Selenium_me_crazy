@@ -110,7 +110,7 @@ public class AutomationExerciseTest {
         int actualItemCount = productItems.size();
         logger.info("Number of items found in Women's Tops category: {}", actualItemCount);
         
-        // Step 3: Verify there are exactly 6 items in this category
+        // Step 3: Verify there are exactly 5 items in this category (intentionally failing for screenshot test)
         int expectedItemCount = 6;
         logger.info("Verifying item count. Expected: {}, Actual: {}", expectedItemCount, actualItemCount);
         Assert.assertEquals(actualItemCount, expectedItemCount, "Number of items in Women's Tops category is not as expected");

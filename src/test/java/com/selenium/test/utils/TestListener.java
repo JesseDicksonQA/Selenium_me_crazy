@@ -11,7 +11,7 @@ import org.testng.ITestListener;
 import org.testng.ITestResult;
 
 import java.io.File;
-import java.io.IOException;
+import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -24,6 +24,18 @@ public class TestListener implements ITestListener {
 
     private static final Logger logger = LoggerFactory.getLogger(TestListener.class);
     private static final String SCREENSHOT_DIR = "C:\\Users\\jesse\\Code_away\\Selenium_me_crazy\\test-output\\screenshots";
+    
+    // Create the screenshots directory at class initialization time
+    static {
+        File screenshotDir = new File(SCREENSHOT_DIR);
+        if (!screenshotDir.exists()) {
+            boolean created = screenshotDir.mkdirs();
+            System.out.println("Creating screenshot directory: " + SCREENSHOT_DIR + " - Success: " + created);
+            if (!created) {
+                System.err.println("WARNING: Failed to create screenshot directory: " + SCREENSHOT_DIR);
+            }
+        }
+    }
 
     /**
      * Called when a test starts
@@ -48,22 +60,30 @@ public class TestListener implements ITestListener {
     @Override
     public void onTestFailure(ITestResult result) {
         logger.error("Test Failed: {}", result.getName());
+        System.out.println("Test Failed: " + result.getName() + " - Taking screenshot");
         
-        // Get the failed test's instance to access the WebDriver
-        Object testInstance = result.getInstance();
-        
-        // Try to get the WebDriver from the test class
-        WebDriver driver = null;
         try {
-            // This assumes the test class has a field named 'driver'
-            driver = (WebDriver) testInstance.getClass().getDeclaredField("driver").get(testInstance);
+            // Import the test class directly
+            com.selenium.test.AutomationExerciseTest test = (com.selenium.test.AutomationExerciseTest) result.getInstance();
+            
+            // Get static ThreadLocal driver field via reflection
+            Field driverField = test.getClass().getDeclaredField("driver");
+            driverField.setAccessible(true); // Allow access to private field
+            ThreadLocal<WebDriver> driverThreadLocal = (ThreadLocal<WebDriver>) driverField.get(null);
+            
+            // Get WebDriver from ThreadLocal
+            WebDriver driver = driverThreadLocal.get();
+            
+            if (driver != null) {
+                System.out.println("Found driver instance: " + driver.getClass().getName());
+                captureScreenshot(driver, result.getName());
+            } else {
+                System.err.println("Driver is null, cannot capture screenshot");
+            }
         } catch (Exception e) {
-            logger.error("Could not access WebDriver instance from test class", e);
-            return;
-        }
-        
-        if (driver != null) {
-            captureScreenshot(driver, result.getName());
+            logger.error("Failed to capture screenshot: {}", e.getMessage(), e);
+            System.err.println("ERROR taking screenshot: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -120,30 +140,59 @@ public class TestListener implements ITestListener {
      * @param testName Name of the test that failed
      */
     private void captureScreenshot(WebDriver driver, String testName) {
+        if (driver == null) {
+            logger.error("Cannot capture screenshot: WebDriver is null");
+            System.err.println("SCREENSHOT ERROR: WebDriver is null");
+            return;
+        }
+        
         try {
+            // Create the screenshots directory again just to be sure
+            File screenshotDir = new File(SCREENSHOT_DIR);
+            if (!screenshotDir.exists()) {
+                boolean created = screenshotDir.mkdirs();
+                logger.info("Creating screenshot directory on-demand: {} - Success: {}", SCREENSHOT_DIR, created);
+                System.out.println("Creating screenshot directory on-demand: " + SCREENSHOT_DIR + " - Success: " + created);
+            }
+            
             // Create a timestamp for unique file names
             String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
             String screenshotFileName = testName + "_" + timestamp + ".png";
             
             // Take screenshot
+            logger.info("Taking screenshot using driver: {}", driver.getClass().getName());
+            System.out.println("Taking screenshot using driver: " + driver.getClass().getName());
+            
             TakesScreenshot ts = (TakesScreenshot) driver;
             File source = ts.getScreenshotAs(OutputType.FILE);
+            logger.info("Screenshot captured to temp file: {}", source.getAbsolutePath());
+            System.out.println("Screenshot captured to temp file: " + source.getAbsolutePath());
             
             // Save the screenshot
             File destination = new File(SCREENSHOT_DIR + File.separator + screenshotFileName);
             FileUtils.copyFile(source, destination);
             
-            logger.info("Screenshot captured and saved: {}", destination.getAbsolutePath());
+            logger.info("Screenshot saved to: {}", destination.getAbsolutePath());
+            System.out.println("Screenshot saved to: " + destination.getAbsolutePath());
+            
+            // Verify the file was created
+            if (destination.exists()) {
+                logger.info("Screenshot file verified to exist: {}", destination.getAbsolutePath());
+            } else {
+                logger.error("Screenshot file does not exist after save: {}", destination.getAbsolutePath());
+                System.err.println("SCREENSHOT ERROR: File does not exist after save: " + destination.getAbsolutePath());
+            }
             
             // For ReportNG integration - store screenshot path in system property
-            // ReportNG can access this in the HTML report
             System.setProperty("org.uncommons.reportng.escape-output", "false");
             String screenshotPath = "screenshots/" + screenshotFileName;
             String htmlLink = "<a href='" + screenshotPath + "' target='_blank'>View Screenshot</a>";
             org.testng.Reporter.log(htmlLink);
             
-        } catch (IOException e) {
-            logger.error("Failed to capture screenshot", e);
+        } catch (Exception e) {
+            logger.error("Failed to capture screenshot: {}", e.getMessage(), e);
+            System.err.println("SCREENSHOT ERROR: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 }
